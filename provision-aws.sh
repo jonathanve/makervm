@@ -17,7 +17,7 @@ apt-get update && apt-get install -y \
         libc++-dev \
         software-properties-common \
         curl \
-        wget \
+        wget
     && rm -rf /var/lib/apt/lists/*
 
 # timezone
@@ -50,7 +50,7 @@ apt-get update && apt-get install -y \
 
 # docker
 wget -qO- https://get.docker.com/ | sh
-usermod -a -G docker vagrant
+usermod -a -G docker ubuntu
 service docker start
 
 # vars
@@ -59,16 +59,16 @@ export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
 export GOROOT=/usr/local/go
-export GOPATH=/home/vagrant/go/libs
+export GOPATH=/home/ubuntu/go/libs
 export GOOS=linux
 export GOARCH=amd64
 
-export PROTOC_PATH=/vagrant_data/software/protoc-3.6.1-linux-x86_64
-export GRPC_PATH=/home/vagrant/grpc
+export PROTOC_PATH=/home/ubuntu/software/protoc-3.6.1-linux-x86_64
+export GRPC_PATH=/home/ubuntu/grpc
 export GRPC_VERSION=v1.18.0
 
 # protoc
-sudo -u vagrant mkdir -p $PROTOC_PATH
+sudo -u ubuntu mkdir -p $PROTOC_PATH
 cd $PROTOC_PATH
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip
 unzip protoc-3.6.1-linux-x86_64.zip
@@ -78,8 +78,8 @@ cd -
 wget -O go.tgz "$GO_URL"
 tar -C /usr/local -xzf go.tgz
 rm go.tgz
-sudo -u vagrant mkdir -p $GOPATH
-sudo -u vagrant mkdir -p $GRPC_PATH
+sudo -u ubuntu mkdir -p $GOPATH
+sudo -u ubuntu mkdir -p $GRPC_PATH
 
 # bashrc
 echo "
@@ -102,11 +102,11 @@ export GRPC_PATH=$GRPC_PATH
 
 # path
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt
-" >> /home/vagrant/.bashrc
+" >> /home/ubuntu/.bashrc
 
 # load
-source /home/vagrant/.bashrc
-echo "source /home/vagrant/.bashrc" >> /home/vagrant/.bash_profile
+source /home/ubuntu/.bashrc
+echo "source /home/ubuntu/.bashrc" >> /home/ubuntu/.bash_profile
 
 # install grpc
 git clone https://github.com/grpc/grpc.git -b $GRPC_VERSION $GRPC_PATH
