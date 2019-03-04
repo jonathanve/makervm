@@ -26,7 +26,7 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # tools sources
 add-apt-repository -y ppa:certbot/certbot
-curl -sL https://deb.nodesource.com/setup_8.x | bash -
+curl -sL https://deb.nodesource.com/setup_10.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
@@ -43,6 +43,7 @@ apt-get update && apt-get install -y \
         sqlite3 \
         nginx \
         nginx-extras \
+        apache2-utils \
         unzip \
         p7zip \
         python-certbot-nginx \
@@ -129,6 +130,12 @@ cd $GRPC_PATH && git submodule update --init && make && cd -
 /usr/bin/python3 -m pip install git+https://github.com/Supervisor/supervisor && mkdir -p /var/log/supervisor
 /usr/bin/python3 -m pip install grpcio
 /usr/bin/python3 -m pip install grpcio-tools googleapis-common-protos
+
+# ubuntu as owner
+chown ubuntu:ubuntu -R $GOPATH
+chown ubuntu:ubuntu -R $PROTOC_PATH
+chown ubuntu:ubuntu -R $GRPC_PATH
+chown ubuntu:ubuntu -R /home/ubuntu/.cache
 
 # cleanup
 apt-get autoclean && apt-get autoremove

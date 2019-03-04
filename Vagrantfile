@@ -13,6 +13,7 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "ubuntu/bionic64"
+  config.disksize.size = '50GB'
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -55,7 +56,7 @@ Vagrant.configure("2") do |config|
     
     # Customize the amount of memory on the VM:
     vb.name = "makervm"
-    vb.memory = "2560"
+    vb.memory = "3072"
     vb.cpus = 2
   end
   #
