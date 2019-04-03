@@ -1,5 +1,5 @@
 
-run:
+up:
 	vagrant up
 
 ssh:
