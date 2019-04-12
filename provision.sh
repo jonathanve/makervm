@@ -18,11 +18,19 @@ apt-get update && apt-get install -y \
         software-properties-common \
         curl \
         wget \
+        resolvconf \
     && rm -rf /var/lib/apt/lists/*
 
 # timezone
 export TZ=UTC
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# dns
+echo "
+nameserver 8.8.4.4
+nameserver 8.8.8.8
+" >> /etc/resolvconf/resolv.conf.d/head
+service resolvconf restart
 
 # tools sources
 add-apt-repository -y ppa:certbot/certbot
