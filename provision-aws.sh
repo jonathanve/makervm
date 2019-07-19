@@ -1,4 +1,5 @@
 # base
+export DEBIAN_FRONTEND=noninteractive
 apt-get update && apt-get install -y \
         git \
         gcc \
@@ -37,6 +38,7 @@ add-apt-repository -y ppa:certbot/certbot
 curl -sL https://deb.nodesource.com/setup_10.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && dpkg -i erlang-solutions_1.0_all.deb
 
 # install
 apt-get update && apt-get install -y \
@@ -55,6 +57,8 @@ apt-get update && apt-get install -y \
         unzip \
         p7zip \
         python-certbot-nginx \
+        esl-erlang \
+        elixir \
     && rm -rf /var/lib/apt/lists/*
 
 # docker
@@ -63,7 +67,7 @@ usermod -a -G docker ubuntu
 service docker start
 
 # vars
-export GO_VERSION=1.12.1
+export GO_VERSION=1.12.7
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -72,15 +76,15 @@ export GOPATH=/home/ubuntu/go/libs
 export GOOS=linux
 export GOARCH=amd64
 
-export PROTOC_PATH=/home/ubuntu/software/protoc-3.6.1-linux-x86_64
-export GRPC_PATH=/home/ubuntu/grpc
-export GRPC_VERSION=v1.19.1
+export PROTOC_PATH=/vagrant_data/software/protoc-3.8.0-linux-x86_64
+export GRPC_PATH=/home/vagrant/grpc
+export GRPC_VERSION=v1.22.0
 
 # protoc
-sudo -u ubuntu mkdir -p $PROTOC_PATH
+sudo -u vagrant mkdir -p $PROTOC_PATH
 cd $PROTOC_PATH
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip
-unzip protoc-3.6.1-linux-x86_64.zip
+wget https://github.com/protocolbuffers/protobuf/releases/download/v3.8.0/protoc-3.8.0-linux-x86_64.zip
+unzip protoc-3.8.0-linux-x86_64.zip
 cd -
 
 # install go and mkdirs
