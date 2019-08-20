@@ -67,7 +67,7 @@ usermod -a -G docker ubuntu
 service docker start
 
 # vars
-export GO_VERSION=1.12.7
+export GO_VERSION=1.12.9
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -78,7 +78,7 @@ export GOARCH=amd64
 
 export PROTOC_PATH=/vagrant_data/software/protoc-3.8.0-linux-x86_64
 export GRPC_PATH=/home/vagrant/grpc
-export GRPC_VERSION=v1.22.0
+export GRPC_VERSION=v1.22.1
 
 # protoc
 sudo -u vagrant mkdir -p $PROTOC_PATH
