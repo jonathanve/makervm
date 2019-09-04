@@ -67,7 +67,7 @@ usermod -a -G docker ubuntu
 service docker start
 
 # vars
-export GO_VERSION=1.12.9
+export GO_VERSION=1.13
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
