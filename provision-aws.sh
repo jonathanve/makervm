@@ -59,6 +59,7 @@ apt-get update && apt-get install -y \
         python-certbot-nginx \
         esl-erlang \
         elixir \
+        mit-scheme \
     && rm -rf /var/lib/apt/lists/*
 
 # docker
