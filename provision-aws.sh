@@ -77,12 +77,12 @@ export GOPATH=/home/ubuntu/go/libs
 export GOOS=linux
 export GOARCH=amd64
 
-export PROTOC_PATH=/vagrant_data/software/protoc-3.8.0-linux-x86_64
-export GRPC_PATH=/home/vagrant/grpc
+export PROTOC_PATH=/home/ubuntu/software/protoc-3.8.0-linux-x86_64
+export GRPC_PATH=/home/ubuntu/grpc
 export GRPC_VERSION=v1.24.0
 
 # protoc
-sudo -u vagrant mkdir -p $PROTOC_PATH
+sudo -u ubuntu mkdir -p $PROTOC_PATH
 cd $PROTOC_PATH
 wget https://github.com/protocolbuffers/protobuf/releases/download/v3.8.0/protoc-3.8.0-linux-x86_64.zip
 unzip protoc-3.8.0-linux-x86_64.zip
