@@ -1,8 +1,10 @@
 # makervm
-Maker VM using Ubuntu, Protoc, GRPC, OpenAPI, Go/Py3/NodeJS, Docker, Certbot
+Maker VM using Ubuntu Linux
 
-### vagrant plugins
+### create
 
 ```
-$ vagrant plugin install vagrant-disksize
+- Install Virtualbox and Vagrant
+- Install plugin: $ vagrant plugin install vagrant-disksize
+- Run: $ make up
 ```
