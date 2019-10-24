@@ -121,6 +121,7 @@ export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt
 # load
 source /home/ubuntu/.bashrc
 echo "source /home/ubuntu/.bashrc" >> /home/ubuntu/.bash_profile
+chown ubuntu:ubuntu /home/ubuntu/.bash_profile
 
 # install grpc
 git clone https://github.com/grpc/grpc.git -b $GRPC_VERSION $GRPC_PATH
@@ -149,6 +150,9 @@ chown ubuntu:ubuntu -R $GOPATH
 chown ubuntu:ubuntu -R $PROTOC_PATH
 chown ubuntu:ubuntu -R $GRPC_PATH
 chown ubuntu:ubuntu -R /home/ubuntu/.cache
+
+# rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 # cleanup
 apt-get autoclean && apt-get autoremove

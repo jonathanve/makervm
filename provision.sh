@@ -121,6 +121,7 @@ export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt
 # load
 source /home/vagrant/.bashrc
 echo "source /home/vagrant/.bashrc" >> /home/vagrant/.bash_profile
+chown vagrant:vagrant /home/vagrant/.bash_profile
 
 # install grpc
 git clone https://github.com/grpc/grpc.git -b $GRPC_VERSION $GRPC_PATH
@@ -143,6 +144,15 @@ cd $GRPC_PATH && git submodule update --init && make && cd -
 /usr/bin/python3 -m pip install git+https://github.com/Supervisor/supervisor && mkdir -p /var/log/supervisor
 /usr/bin/python3 -m pip install grpcio
 /usr/bin/python3 -m pip install grpcio-tools googleapis-common-protos
+
+# ubuntu as owner
+chown vagrant:vagrant -R $GOPATH
+chown vagrant:vagrant -R $PROTOC_PATH
+chown vagrant:vagrant -R $GRPC_PATH
+chown vagrant:vagrant -R /home/vagrant/.cache
+
+# rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 # cleanup
 apt-get autoclean && apt-get autoremove
