@@ -68,7 +68,7 @@ usermod -a -G docker ubuntu
 service docker start
 
 # vars
-export GO_VERSION=1.13.1
+export GO_VERSION=1.13.4
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -79,7 +79,7 @@ export GOARCH=amd64
 
 export PROTOC_PATH=/home/ubuntu/software/protoc-3.8.0-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
-export GRPC_VERSION=v1.24.0
+export GRPC_VERSION=v1.24.3
 
 # protoc
 sudo -u ubuntu mkdir -p $PROTOC_PATH
