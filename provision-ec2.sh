@@ -35,19 +35,23 @@ service resolvconf restart
 
 # tools sources
 add-apt-repository -y ppa:certbot/certbot
-curl -sL https://deb.nodesource.com/setup_10.x | bash -
+curl -sL https://deb.nodesource.com/setup_12.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && dpkg -i erlang-solutions_1.0_all.deb
 
 # install
 apt-get update && apt-get install -y \
+        libpython2.7 \
+        libpython2.7-dev \
         python-dev \
         python-pip \
         python3-dev \
         python3-pip \
         python3.7 \
         python3.7-dev \
+        python3.8 \
+        python3.8-dev \
         nodejs \
         yarn \
         tmux \
@@ -56,6 +60,8 @@ apt-get update && apt-get install -y \
         nginx \
         nginx-extras \
         apache2-utils \
+        libcurl3 \
+        redis-tools \
         unzip \
         p7zip \
         python-certbot-nginx \
@@ -70,7 +76,7 @@ usermod -a -G docker ubuntu
 service docker start
 
 # vars
-export GO_VERSION=1.13.4
+export GO_VERSION=1.13.8
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -79,15 +85,19 @@ export GOPATH=/home/ubuntu/go/libs
 export GOOS=linux
 export GOARCH=amd64
 
-export PROTOC_PATH=/home/ubuntu/software/protoc-3.8.0-linux-x86_64
+export PROTOC_VERSION=3.11.2
+export GRPC_VERSION=v1.27.1
+export SWIFT_VERSION=5.1.4
+export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
-export GRPC_VERSION=v1.24.3
+export RUST_PATH=/home/ubuntu/.cargo
+export SWIFT_PATH=/usr/share/swift/usr
 
 # protoc
 sudo -u ubuntu mkdir -p $PROTOC_PATH
 cd $PROTOC_PATH
-wget https://github.com/protocolbuffers/protobuf/releases/download/v3.8.0/protoc-3.8.0-linux-x86_64.zip
-unzip protoc-3.8.0-linux-x86_64.zip
+wget https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
+unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip
 cd -
 
 # install go and mkdirs
@@ -96,6 +106,11 @@ tar -C /usr/local -xzf go.tgz
 rm go.tgz
 sudo -u ubuntu mkdir -p $GOPATH
 sudo -u ubuntu mkdir -p $GRPC_PATH
+
+# install swift
+wget https://swift.org/builds/swift-${SWIFT_VERSION}-release/ubuntu1804/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04.tar.gz
+tar xzf swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04.tar.gz
+sudo mv swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04 /usr/share/swift
 
 # bashrc
 echo "
@@ -116,8 +131,14 @@ export PROTOC_PATH=$PROTOC_PATH
 # grpc
 export GRPC_PATH=$GRPC_PATH
 
+# rust
+export RUST_PATH=$RUST_PATH
+
+# swift
+export SWIFT_PATH=$SWIFT_PATH
+
 # path
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$RUST_PATH/bin:$SWIFT_PATH/bin
 " >> /home/ubuntu/.bashrc
 
 # load
