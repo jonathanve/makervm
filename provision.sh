@@ -35,6 +35,7 @@ service resolvconf restart
 
 # tools sources
 add-apt-repository -y ppa:certbot/certbot
+apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
 curl -sL https://deb.nodesource.com/setup_12.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
@@ -68,6 +69,9 @@ apt-get update && apt-get install -y \
         esl-erlang \
         elixir \
         mit-scheme \
+        mosquitto \
+        mosquitto-clients \
+        mosquitto-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # docker
@@ -76,7 +80,7 @@ usermod -a -G docker vagrant
 service docker start
 
 # vars
-export GO_VERSION=1.13.8
+export GO_VERSION=1.14
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -86,7 +90,7 @@ export GOOS=linux
 export GOARCH=amd64
 
 export PROTOC_VERSION=3.11.2
-export GRPC_VERSION=v1.27.1
+export GRPC_VERSION=v1.27.2
 export SWIFT_VERSION=5.1.4
 export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
@@ -156,9 +160,6 @@ cd $GRPC_PATH && git submodule update --init && make && cd -
 /usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 /usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 /usr/local/go/bin/go get -u github.com/googleapis/googleapis
-/usr/local/go/bin/go get -u github.com/spf13/cobra
-/usr/local/go/bin/go get -u github.com/spf13/viper
-/usr/local/go/bin/go get -u github.com/kardianos/govendor
 /usr/local/go/bin/go get -u github.com/ddollar/forego
 /usr/bin/python3 -m pip install pip --upgrade
 /usr/bin/python3 -m pip install setuptools --upgrade
