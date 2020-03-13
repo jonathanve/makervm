@@ -90,8 +90,8 @@ export GOOS=linux
 export GOARCH=amd64
 
 export PROTOC_VERSION=3.11.2
-export GRPC_VERSION=v1.27.2
-export SWIFT_VERSION=5.1.4
+export GRPC_VERSION=v1.27.3
+export SWIFT_VERSION=5.1.5
 export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
 export RUST_PATH=/home/ubuntu/.cargo
