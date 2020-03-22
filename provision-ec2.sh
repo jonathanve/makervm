@@ -80,7 +80,7 @@ usermod -a -G docker ubuntu
 service docker start
 
 # vars
-export GO_VERSION=1.14
+export GO_VERSION=1.15
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -89,9 +89,9 @@ export GOPATH=/home/ubuntu/go/libs
 export GOOS=linux
 export GOARCH=amd64
 
-export PROTOC_VERSION=3.11.2
-export GRPC_VERSION=v1.27.3
-export SWIFT_VERSION=5.1.5
+export PROTOC_VERSION=3.12.2
+export GRPC_VERSION=v1.31.0
+export SWIFT_VERSION=5.2.5
 export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
 export RUST_PATH=/home/ubuntu/.cargo
