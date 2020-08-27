@@ -5,6 +5,7 @@ apt-get update && apt-get install -y \
         gcc \
         g++ \
         make \
+        cmake \
         build-essential \
         openssl \
         libssl-dev \
@@ -22,6 +23,18 @@ apt-get update && apt-get install -y \
         resolvconf \
     && rm -rf /var/lib/apt/lists/*
 
+# gnu
+add-apt-repository -y ppa:ubuntu-toolchain-r/test
+apt-get update && apt-get install -y gcc-7 g++-7 gcc-8 g++-8 gcc-9 g++-9 gcc-10 g++-10
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7
+update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 8
+update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 8
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 10
+update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10
+
 # timezone
 export TZ=UTC
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -36,7 +49,7 @@ service resolvconf restart
 # tools sources
 add-apt-repository -y ppa:certbot/certbot
 apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
-curl -sL https://deb.nodesource.com/setup_12.x | bash -
+curl -sL https://deb.nodesource.com/setup_14.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && dpkg -i erlang-solutions_1.0_all.deb
@@ -80,7 +93,7 @@ usermod -a -G docker vagrant
 service docker start
 
 # vars
-export GO_VERSION=1.15
+export GO_VERSION=1.15.3
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -89,9 +102,9 @@ export GOPATH=/home/vagrant/go/libs
 export GOOS=linux
 export GOARCH=amd64
 
-export PROTOC_VERSION=3.12.2
-export GRPC_VERSION=v1.31.0
-export SWIFT_VERSION=5.2.5
+export PROTOC_VERSION=3.13.0
+export GRPC_VERSION=v1.33.2
+export SWIFT_VERSION=5.3
 export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
 export RUST_PATH=/home/vagrant/.cargo
@@ -158,7 +171,7 @@ cd $GRPC_PATH && git submodule update --init && make && cd -
 /usr/local/go/bin/go get -u google.golang.org/grpc
 /usr/local/go/bin/go get -u github.com/golang/protobuf/protoc-gen-go
 /usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2
 /usr/local/go/bin/go get -u github.com/googleapis/googleapis
 /usr/local/go/bin/go get -u github.com/ddollar/forego
 /usr/bin/python3 -m pip install pip --upgrade
@@ -179,4 +192,4 @@ chown vagrant:vagrant -R /home/vagrant/.cache
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 # cleanup
-apt-get autoclean && apt-get autoremove
+apt-get autoclean -y && apt-get autoremove -y

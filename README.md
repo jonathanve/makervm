@@ -1,5 +1,5 @@
 # makervm
-Maker VM using Ubuntu Linux
+Maker VM using Linux
 
 ### create
 
