@@ -93,7 +93,7 @@ usermod -a -G docker vagrant
 service docker start
 
 # vars
-export GO_VERSION=1.15.3
+export GO_VERSION=1.15.4
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -104,6 +104,7 @@ export GOARCH=amd64
 
 export PROTOC_VERSION=3.13.0
 export GRPC_VERSION=v1.33.2
+export JULIA_VERSION=1.5.2
 export SWIFT_VERSION=5.3
 export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
@@ -123,6 +124,14 @@ tar -C /usr/local -xzf go.tgz
 rm go.tgz
 sudo -u vagrant mkdir -p $GOPATH
 sudo -u vagrant mkdir -p $GRPC_PATH
+
+# install julia
+wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
+tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
+chown -R root:root julia-${JULIA_VERSION}
+sudo mv julia-${JULIA_VERSION} /opt/
+sudo ln -s /opt/julia-${JULIA_VERSION}/bin/julia /usr/local/bin/julia
+sudo -u vagrant mkdir -p /home/vagrant/.julia/
 
 # install swift
 wget https://swift.org/builds/swift-${SWIFT_VERSION}-release/ubuntu1804/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04.tar.gz
