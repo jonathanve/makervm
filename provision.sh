@@ -35,6 +35,15 @@ update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
 update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 10
 update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10
 
+# llvm
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+./llvm.sh 11
+update-alternatives --install /usr/bin/clang clang /usr/bin/clang-6.0 6
+update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-6.0 6
+update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 11
+update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 11
+
 # timezone
 export TZ=UTC
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -52,7 +61,7 @@ apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
 curl -sL https://deb.nodesource.com/setup_14.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && dpkg -i erlang-solutions_1.0_all.deb
+wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && dpkg -i erlang-solutions_2.0_all.deb
 
 # install
 apt-get update && apt-get install -y \
@@ -93,7 +102,7 @@ usermod -a -G docker vagrant
 service docker start
 
 # vars
-export GO_VERSION=1.15.4
+export GO_VERSION=1.15.5
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -104,8 +113,8 @@ export GOARCH=amd64
 
 export PROTOC_VERSION=3.13.0
 export GRPC_VERSION=v1.33.2
-export JULIA_VERSION=1.5.2
-export SWIFT_VERSION=5.3
+export JULIA_VERSION=1.5.3
+export SWIFT_VERSION=5.3.1
 export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/ubuntu/grpc
 export RUST_PATH=/home/vagrant/.cargo
@@ -137,6 +146,9 @@ sudo -u vagrant mkdir -p /home/vagrant/.julia/
 wget https://swift.org/builds/swift-${SWIFT_VERSION}-release/ubuntu1804/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04.tar.gz
 tar xzf swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04.tar.gz
 sudo mv swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04 /usr/share/swift
+
+# install typescript
+npm install -g typescript
 
 # bashrc
 echo "
@@ -176,20 +188,12 @@ chown vagrant:vagrant /home/vagrant/.bash_profile
 git clone https://github.com/grpc/grpc.git -b $GRPC_VERSION $GRPC_PATH
 cd $GRPC_PATH && git submodule update --init && make && cd -
 
-# install grpc libs
-/usr/local/go/bin/go get -u google.golang.org/grpc
-/usr/local/go/bin/go get -u github.com/golang/protobuf/protoc-gen-go
-/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2
-/usr/local/go/bin/go get -u github.com/googleapis/googleapis
-/usr/local/go/bin/go get -u github.com/ddollar/forego
+# update python base libs
 /usr/bin/python3 -m pip install pip --upgrade
 /usr/bin/python3 -m pip install setuptools --upgrade
 /usr/bin/python3 -m pip install virtualenv --upgrade
 /usr/bin/python3 -m pip install pipenv --upgrade
-/usr/bin/python3 -m pip install git+https://github.com/Supervisor/supervisor && mkdir -p /var/log/supervisor
-/usr/bin/python3 -m pip install grpcio
-/usr/bin/python3 -m pip install grpcio-tools googleapis-common-protos
+/usr/bin/python3 -m pip install git+https://github.com/Supervisor/supervisor.git@4.2.1 && mkdir -p /var/log/supervisor
 
 # ubuntu as owner
 chown vagrant:vagrant -R $GOPATH
