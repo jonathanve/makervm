@@ -1,5 +1,25 @@
-# base
+# automatic
 export DEBIAN_FRONTEND=noninteractive
+export MY_USER=vagrant
+
+# sources
+echo "
+deb http://deb.debian.org/debian buster main contrib non-free
+deb-src http://deb.debian.org/debian buster main contrib non-free
+
+deb http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+deb-src http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+
+deb http://deb.debian.org/debian buster-updates main contrib non-free
+deb-src http://deb.debian.org/debian buster-updates main contrib non-free
+" > /etc/apt/sources.list
+
+echo "
+deb http://deb.debian.org/debian buster-backports main contrib non-free
+deb-src http://deb.debian.org/debian buster-backports main contrib non-free
+" | tee /etc/apt/sources.list.d/backports.list
+
+# base
 apt-get update && apt-get install -y \
         git \
         gcc \
@@ -15,34 +35,21 @@ apt-get update && apt-get install -y \
         pkg-config \
         libgflags-dev \
         libgtest-dev \
+        zlib1g-dev \
         clang \
         libc++-dev \
         software-properties-common \
+        net-tools \
         curl \
         wget \
         resolvconf \
+        tmux \
+        vim \
+        emacs \
+        emacs24 \
+        unzip \
+        p7zip \
     && rm -rf /var/lib/apt/lists/*
-
-# gnu
-add-apt-repository -y ppa:ubuntu-toolchain-r/test
-apt-get update && apt-get install -y gcc-7 g++-7 gcc-8 g++-8 gcc-9 g++-9 gcc-10 g++-10
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 7
-update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 8
-update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 8
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
-update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 10
-update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10
-
-# llvm
-wget https://apt.llvm.org/llvm.sh
-chmod +x llvm.sh
-./llvm.sh 11
-update-alternatives --install /usr/bin/clang clang /usr/bin/clang-6.0 6
-update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-6.0 6
-update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 11
-update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 11
 
 # timezone
 export TZ=UTC
@@ -56,9 +63,12 @@ nameserver 8.8.8.8
 resolvconf --enable-updates
 resolvconf -u
 
-# tools sources
-add-apt-repository -y ppa:certbot/certbot
-apt-add-repository -y ppa:mosquitto-dev/mosquitto-ppa
+# llvm
+# wget https://apt.llvm.org/llvm.sh
+# chmod +x llvm.sh
+# ./llvm.sh
+
+# 3rd sources
 curl -sL https://deb.nodesource.com/setup_14.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
@@ -72,22 +82,15 @@ apt-get update && apt-get install -y \
         python-pip \
         python3-dev \
         python3-pip \
-        python3.7 \
-        python3.7-dev \
-        python3.8 \
-        python3.8-dev \
         nodejs \
         yarn \
-        tmux \
-        vim \
         sqlite3 \
         nginx \
         nginx-extras \
         apache2-utils \
-        libcurl3 \
+        libcurl4 \
         redis-tools \
-        unzip \
-        p7zip \
+        certbot \
         python-certbot-nginx \
         esl-erlang \
         elixir \
@@ -99,30 +102,28 @@ apt-get update && apt-get install -y \
 
 # docker
 wget -qO- https://get.docker.com/ | sh
-usermod -a -G docker vagrant
+usermod -a -G docker ${MY_USER}
 service docker start
 
 # vars
-export GO_VERSION=1.15.5
+export GO_VERSION=1.15.6
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
 export GOROOT=/usr/local/go
-export GOPATH=/home/vagrant/go/libs
+export GOPATH=/home/${MY_USER}/go/libs
 export GOOS=linux
 export GOARCH=amd64
 
 export PROTOC_VERSION=3.13.0
-export GRPC_VERSION=v1.33.2
+export GRPC_VERSION=v1.34.0
 export JULIA_VERSION=1.5.3
-export SWIFT_VERSION=5.3.1
-export PROTOC_PATH=/home/ubuntu/software/protoc-${PROTOC_VERSION}-linux-x86_64
-export GRPC_PATH=/home/ubuntu/grpc
-export RUST_PATH=/home/vagrant/.cargo
-export SWIFT_PATH=/usr/share/swift/usr
+export PROTOC_PATH=/home/${MY_USER}/software/protoc-${PROTOC_VERSION}-linux-x86_64
+export GRPC_PATH=/home/${MY_USER}/grpc
+export RUST_PATH=/home/${MY_USER}/.cargo
 
 # protoc
-sudo -u ubuntu mkdir -p $PROTOC_PATH
+sudo -u ${MY_USER} mkdir -p $PROTOC_PATH
 cd $PROTOC_PATH
 wget https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
 unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip
@@ -132,8 +133,8 @@ cd -
 wget -O go.tgz "$GO_URL"
 tar -C /usr/local -xzf go.tgz
 rm go.tgz
-sudo -u vagrant mkdir -p $GOPATH
-sudo -u vagrant mkdir -p $GRPC_PATH
+sudo -u ${MY_USER} mkdir -p $GOPATH
+sudo -u ${MY_USER} mkdir -p $GRPC_PATH
 
 # install julia
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
@@ -141,12 +142,7 @@ tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
 sudo mv julia-${JULIA_VERSION} /opt/
 sudo ln -s /opt/julia-${JULIA_VERSION}/bin/julia /usr/local/bin/julia
-sudo -u vagrant mkdir -p /home/vagrant/.julia/
-
-# install swift
-wget https://swift.org/builds/swift-${SWIFT_VERSION}-release/ubuntu1804/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04.tar.gz
-tar xzf swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04.tar.gz
-sudo mv swift-${SWIFT_VERSION}-RELEASE-ubuntu18.04 /usr/share/swift
+sudo -u ${MY_USER} mkdir -p /home/${MY_USER}/.julia/
 
 # install typescript
 npm install -g typescript
@@ -173,34 +169,40 @@ export GRPC_PATH=$GRPC_PATH
 # rust
 export RUST_PATH=$RUST_PATH
 
-# swift
-export SWIFT_PATH=$SWIFT_PATH
-
 # path
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$RUST_PATH/bin:$SWIFT_PATH/bin
-" >> /home/vagrant/.bashrc
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$RUST_PATH/bin
+" >> /home/${MY_USER}/.bashrc
 
 # load
-source /home/vagrant/.bashrc
-echo "source /home/vagrant/.bashrc" >> /home/vagrant/.bash_profile
-chown vagrant:vagrant /home/vagrant/.bash_profile
+source /home/${MY_USER}/.bashrc
+echo "source /home/${MY_USER}/.bashrc" >> /home/${MY_USER}/.bash_profile
+chown ${MY_USER}:${MY_USER} /home/${MY_USER}/.bash_profile
 
 # install grpc
 git clone https://github.com/grpc/grpc.git -b $GRPC_VERSION $GRPC_PATH
 cd $GRPC_PATH && git submodule update --init && make && cd -
+
+# go grpc
+export GO111MODULE=on
+/usr/local/go/bin/go get -u google.golang.org/grpc
+/usr/local/go/bin/go get -u google.golang.org/protobuf/cmd/protoc-gen-go
+/usr/local/go/bin/go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
+/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+/usr/local/go/bin/go get -u github.com/googleapis/googleapis
 
 # update python base libs
 /usr/bin/python3 -m pip install pip --upgrade
 /usr/bin/python3 -m pip install setuptools --upgrade
 /usr/bin/python3 -m pip install virtualenv --upgrade
 /usr/bin/python3 -m pip install pipenv --upgrade
-/usr/bin/python3 -m pip install git+https://github.com/Supervisor/supervisor.git@4.2.1 && mkdir -p /var/log/supervisor
+/usr/bin/python3 -m pip install supervisor --upgrade
 
-# ubuntu as owner
-chown vagrant:vagrant -R $GOPATH
-chown vagrant:vagrant -R $PROTOC_PATH
-chown vagrant:vagrant -R $GRPC_PATH
-chown vagrant:vagrant -R /home/vagrant/.cache
+# ${MY_USER} as owner
+chown ${MY_USER}:${MY_USER} -R $GOPATH
+chown ${MY_USER}:${MY_USER} -R $PROTOC_PATH
+chown ${MY_USER}:${MY_USER} -R $GRPC_PATH
+sudo -u ${MY_USER} mkdir -p /home/${MY_USER}/.cache
 
 # rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
