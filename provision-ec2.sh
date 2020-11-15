@@ -52,8 +52,9 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 echo "
 nameserver 8.8.4.4
 nameserver 8.8.8.8
-" >> /etc/resolvconf/resolv.conf.d/head
-service resolvconf restart
+" | tee /etc/resolvconf/resolv.conf.d/head
+resolvconf --enable-updates
+resolvconf -u
 
 # tools sources
 add-apt-repository -y ppa:certbot/certbot
