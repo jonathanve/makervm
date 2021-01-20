@@ -39,6 +39,7 @@ apt-get update && apt-get install -y \
         clang \
         libc++-dev \
         software-properties-common \
+        libjansson-dev \
         net-tools \
         curl \
         wget \
@@ -105,8 +106,14 @@ wget -qO- https://get.docker.com/ | sh
 usermod -a -G docker ${MY_USER}
 service docker start
 
+# docker-compose
+export DOCKER_COMPOSE_VERSION=1.28.0
+curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
 # vars
-export GO_VERSION=1.15.6
+export GO_VERSION=1.16
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -116,7 +123,7 @@ export GOOS=linux
 export GOARCH=amd64
 
 export PROTOC_VERSION=3.13.0
-export GRPC_VERSION=v1.34.0
+export GRPC_VERSION=v1.34.1
 export JULIA_VERSION=1.5.3
 export PROTOC_PATH=/home/${MY_USER}/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/${MY_USER}/grpc
@@ -135,6 +142,23 @@ tar -C /usr/local -xzf go.tgz
 rm go.tgz
 sudo -u ${MY_USER} mkdir -p $GOPATH
 sudo -u ${MY_USER} mkdir -p $GRPC_PATH
+
+# install avro
+export AVRO_PREFIX=/home/vagrant/avro
+mkdir -p $AVRO_PREFIX/bin
+wget https://downloads.apache.org/avro/avro-1.10.1/avro-src-1.10.1.tar.gz
+tar -xzvf avro-src-1.10.1.tar.gz
+# pushd avro-src-1.10.1
+# mkdir build
+# pushd build
+# cmake .. \
+#         -DCMAKE_INSTALL_PREFIX=$AVRO_PREFIX \
+#         -DCMAKE_BUILD_TYPE=RelWithDebInfo
+# make
+# make test
+# make install
+# popd
+# popd
 
 # install julia
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
@@ -170,7 +194,7 @@ export GRPC_PATH=$GRPC_PATH
 export RUST_PATH=$RUST_PATH
 
 # path
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$RUST_PATH/bin
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$RUST_PATH/bin:$AVRO_PREFIX/bin
 " >> /home/${MY_USER}/.bashrc
 
 # load
@@ -197,6 +221,7 @@ export GO111MODULE=on
 /usr/bin/python3 -m pip install virtualenv --upgrade
 /usr/bin/python3 -m pip install pipenv --upgrade
 /usr/bin/python3 -m pip install supervisor --upgrade
+/usr/bin/python3 -m pip install avro --upgrade
 
 # ${MY_USER} as owner
 chown ${MY_USER}:${MY_USER} -R $GOPATH
