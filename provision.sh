@@ -64,11 +64,6 @@ nameserver 8.8.8.8
 resolvconf --enable-updates
 resolvconf -u
 
-# llvm
-# wget https://apt.llvm.org/llvm.sh
-# chmod +x llvm.sh
-# ./llvm.sh
-
 # 3rd sources
 curl -sL https://deb.nodesource.com/setup_14.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -83,8 +78,10 @@ apt-get update && apt-get install -y \
         python-pip \
         python3-dev \
         python3-pip \
+        default-jdk \
         nodejs \
         yarn \
+        jq \
         sqlite3 \
         nginx \
         nginx-extras \
@@ -95,10 +92,9 @@ apt-get update && apt-get install -y \
         python-certbot-nginx \
         esl-erlang \
         elixir \
+        kafkacat \
         mit-scheme \
-        mosquitto \
         mosquitto-clients \
-        mosquitto-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # docker
@@ -107,13 +103,13 @@ usermod -a -G docker ${MY_USER}
 service docker start
 
 # docker-compose
-export DOCKER_COMPOSE_VERSION=1.28.0
+export DOCKER_COMPOSE_VERSION=1.28.6
 curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.16
+export GO_VERSION=1.16.2
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 
@@ -124,7 +120,7 @@ export GOARCH=amd64
 
 export PROTOC_VERSION=3.13.0
 export GRPC_VERSION=v1.34.1
-export JULIA_VERSION=1.5.3
+export JULIA_VERSION=1.6.0
 export PROTOC_PATH=/home/${MY_USER}/software/protoc-${PROTOC_VERSION}-linux-x86_64
 export GRPC_PATH=/home/${MY_USER}/grpc
 export RUST_PATH=/home/${MY_USER}/.cargo
@@ -144,24 +140,25 @@ sudo -u ${MY_USER} mkdir -p $GOPATH
 sudo -u ${MY_USER} mkdir -p $GRPC_PATH
 
 # install avro
+export AVRO_VERSION=1.10.2
 export AVRO_PREFIX=/home/vagrant/avro
 mkdir -p $AVRO_PREFIX/bin
-wget https://downloads.apache.org/avro/avro-1.10.1/avro-src-1.10.1.tar.gz
-tar -xzvf avro-src-1.10.1.tar.gz
-# pushd avro-src-1.10.1
-# mkdir build
-# pushd build
-# cmake .. \
-#         -DCMAKE_INSTALL_PREFIX=$AVRO_PREFIX \
-#         -DCMAKE_BUILD_TYPE=RelWithDebInfo
-# make
-# make test
-# make install
-# popd
-# popd
+wget https://downloads.apache.org/avro/avro-${AVRO_VERSION}/avro-src-${AVRO_VERSION}.tar.gz
+tar -xzvf avro-src-${AVRO_VERSION}.tar.gz
+pushd avro-src-${AVRO_VERSION}/lang/c
+mkdir build
+pushd build
+cmake .. \
+        -DCMAKE_INSTALL_PREFIX=$AVRO_PREFIX \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo
+make
+make test
+make install
+popd
+popd
 
 # install julia
-wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
+wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
 sudo mv julia-${JULIA_VERSION} /opt/
@@ -194,7 +191,7 @@ export GRPC_PATH=$GRPC_PATH
 export RUST_PATH=$RUST_PATH
 
 # path
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$RUST_PATH/bin:$AVRO_PREFIX/bin
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$AVRO_PREFIX/bin:$RUST_PATH/bin
 " >> /home/${MY_USER}/.bashrc
 
 # load
@@ -204,7 +201,10 @@ chown ${MY_USER}:${MY_USER} /home/${MY_USER}/.bash_profile
 
 # install grpc
 git clone https://github.com/grpc/grpc.git -b $GRPC_VERSION $GRPC_PATH
-cd $GRPC_PATH && git submodule update --init && make && cd -
+pushd $GRPC_PATH
+git submodule update --init
+make
+popd
 
 # go grpc
 export GO111MODULE=on
