@@ -157,6 +157,16 @@ make install
 popd
 popd
 
+# install libsodium
+export LIBSODIUM_VERSION=1.0.18
+curl -fsSL https://github.com/jedisct1/libsodium/archive/${LIBSODIUM_VERSION}.tar.gz | tar -xz
+pushd libsodium-${LIBSODIUM_VERSION}
+./autogen.sh
+./configure
+make
+make install
+popd
+
 # install julia
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
@@ -189,6 +199,10 @@ export GRPC_PATH=$GRPC_PATH
 
 # rust
 export RUST_PATH=$RUST_PATH
+
+# libsodium
+export SODIUM_LIB_DIR=/usr/local/lib
+export LD_LIBRARY_PATH=/usr/local/lib
 
 # path
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$AVRO_PREFIX/bin:$RUST_PATH/bin
