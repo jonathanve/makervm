@@ -25,7 +25,6 @@ apt-get update && apt-get install -y \
         gcc \
         g++ \
         make \
-        cmake \
         build-essential \
         openssl \
         libssl-dev \
@@ -51,6 +50,12 @@ apt-get update && apt-get install -y \
         unzip \
         p7zip \
     && rm -rf /var/lib/apt/lists/*
+
+# cmake
+export CMAKE_VERSION=3.16.1
+wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh
+sh cmake-linux.sh -- --skip-license --prefix=/usr
+rm cmake-linux.sh
 
 # timezone
 export TZ=UTC
@@ -103,34 +108,23 @@ usermod -a -G docker ${MY_USER}
 service docker start
 
 # docker-compose
-export DOCKER_COMPOSE_VERSION=1.28.6
+export DOCKER_COMPOSE_VERSION=1.29.2
 curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.16.2
+export GO_VERSION=1.16.6
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
-
 export GOROOT=/usr/local/go
 export GOPATH=/home/${MY_USER}/go/libs
 export GOOS=linux
 export GOARCH=amd64
-
-export PROTOC_VERSION=3.13.0
-export GRPC_VERSION=v1.34.1
-export JULIA_VERSION=1.6.0
-export PROTOC_PATH=/home/${MY_USER}/software/protoc-${PROTOC_VERSION}-linux-x86_64
+export GRPC_VERSION=v1.38.1
 export GRPC_PATH=/home/${MY_USER}/grpc
+export GRPC_INSTALL_DIR=/home/${MY_USER}/.grpc
 export RUST_PATH=/home/${MY_USER}/.cargo
-
-# protoc
-sudo -u ${MY_USER} mkdir -p $PROTOC_PATH
-cd $PROTOC_PATH
-wget https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
-unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip
-cd -
 
 # install go and mkdirs
 wget -O go.tgz "$GO_URL"
@@ -138,6 +132,7 @@ tar -C /usr/local -xzf go.tgz
 rm go.tgz
 sudo -u ${MY_USER} mkdir -p $GOPATH
 sudo -u ${MY_USER} mkdir -p $GRPC_PATH
+sudo -u ${MY_USER} mkdir -p $GRPC_INSTALL_DIR
 
 # install avro
 export AVRO_VERSION=1.10.2
@@ -168,6 +163,7 @@ make install
 popd
 
 # install julia
+export JULIA_VERSION=1.6.2
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
@@ -205,7 +201,7 @@ export SODIUM_LIB_DIR=/usr/local/lib
 export LD_LIBRARY_PATH=/usr/local/lib
 
 # path
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$PROTOC_PATH/bin:$GRPC_PATH/bins/opt:$AVRO_PREFIX/bin:$RUST_PATH/bin
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin:$GRPC_INSTALL_DIR/bin:$AVRO_PREFIX/bin:$RUST_PATH/bin
 " >> /home/${MY_USER}/.bashrc
 
 # load
@@ -214,10 +210,19 @@ echo "source /home/${MY_USER}/.bashrc" >> /home/${MY_USER}/.bash_profile
 chown ${MY_USER}:${MY_USER} /home/${MY_USER}/.bash_profile
 
 # install grpc
-git clone https://github.com/grpc/grpc.git -b $GRPC_VERSION $GRPC_PATH
+git clone --recurse-submodules -b $GRPC_VERSION https://github.com/grpc/grpc.git $GRPC_PATH
 pushd $GRPC_PATH
-git submodule update --init
-make
+mkdir -p cmake/build
+pushd cmake/build
+cmake \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DgRPC_INSTALL=ON \
+  -DgRPC_BUILD_TESTS=OFF \
+  -DCMAKE_INSTALL_PREFIX=$GRPC_INSTALL_DIR \
+  ../..
+make -j4
+make install
+popd
 popd
 
 # go grpc
