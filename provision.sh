@@ -114,14 +114,14 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.16.6
+export GO_VERSION=1.16.7
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=/home/${MY_USER}/go/libs
 export GOOS=linux
 export GOARCH=amd64
-export GRPC_VERSION=v1.38.1
+export GRPC_VERSION=v1.39.0
 export GRPC_PATH=/home/${MY_USER}/grpc
 export GRPC_INSTALL_DIR=/home/${MY_USER}/.grpc
 export RUST_PATH=/home/${MY_USER}/.cargo
