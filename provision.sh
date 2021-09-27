@@ -1,22 +1,23 @@
 # automatic
 export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_RELEASE=buster
 export MY_USER=vagrant
 
 # sources
 echo "
-deb http://deb.debian.org/debian buster main contrib non-free
-deb-src http://deb.debian.org/debian buster main contrib non-free
+deb https://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free
+deb-src https://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free
 
-deb http://deb.debian.org/debian-security/ buster/updates main contrib non-free
-deb-src http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+deb https://deb.debian.org/debian-security ${DEBIAN_RELEASE}/updates main contrib non-free
+deb-src https://deb.debian.org/debian-security ${DEBIAN_RELEASE}/updates main contrib non-free
 
-deb http://deb.debian.org/debian buster-updates main contrib non-free
-deb-src http://deb.debian.org/debian buster-updates main contrib non-free
+deb https://deb.debian.org/debian ${DEBIAN_RELEASE}-updates main contrib non-free
+deb-src https://deb.debian.org/debian ${DEBIAN_RELEASE}-updates main contrib non-free
 " > /etc/apt/sources.list
 
 echo "
-deb http://deb.debian.org/debian buster-backports main contrib non-free
-deb-src http://deb.debian.org/debian buster-backports main contrib non-free
+deb https://deb.debian.org/debian ${DEBIAN_RELEASE}-backports main contrib non-free
+deb-src https://deb.debian.org/debian ${DEBIAN_RELEASE}-backports main contrib non-free
 " | tee /etc/apt/sources.list.d/backports.list
 
 # base
@@ -24,6 +25,7 @@ apt-get update && apt-get install -y \
         git \
         gcc \
         g++ \
+        gdb \
         make \
         build-essential \
         openssl \
@@ -45,17 +47,9 @@ apt-get update && apt-get install -y \
         resolvconf \
         tmux \
         vim \
-        emacs \
-        emacs24 \
         unzip \
         p7zip \
     && rm -rf /var/lib/apt/lists/*
-
-# cmake
-export CMAKE_VERSION=3.16.1
-wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh
-sh cmake-linux.sh -- --skip-license --prefix=/usr
-rm cmake-linux.sh
 
 # timezone
 export TZ=UTC
@@ -63,11 +57,17 @@ ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # dns
 echo "
-nameserver 8.8.4.4
-nameserver 8.8.8.8
-" | tee /etc/resolvconf/resolv.conf.d/head
+nameserver 1.1.1.1
+nameserver 1.0.0.1
+" | tee -a /etc/resolvconf/resolv.conf.d/head
 resolvconf --enable-updates
 resolvconf -u
+
+# cmake
+export CMAKE_VERSION=3.16.1
+wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh
+sh cmake-linux.sh -- --skip-license --prefix=/usr
+rm cmake-linux.sh
 
 # 3rd sources
 curl -sL https://deb.nodesource.com/setup_14.x | bash -
@@ -114,14 +114,14 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.17.1
+export GO_VERSION=1.17.2
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=/home/${MY_USER}/go/libs
 export GOOS=linux
 export GOARCH=amd64
-export GRPC_VERSION=v1.39.1
+export GRPC_VERSION=v1.41.0
 export GRPC_PATH=/home/${MY_USER}/grpc
 export GRPC_INSTALL_DIR=/home/${MY_USER}/.grpc
 export RUST_PATH=/home/${MY_USER}/.cargo
@@ -163,7 +163,7 @@ make install
 popd
 
 # install julia
-export JULIA_VERSION=1.6.2
+export JULIA_VERSION=1.6.3
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
