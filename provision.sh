@@ -70,7 +70,7 @@ sh cmake-linux.sh -- --skip-license --prefix=/usr
 rm cmake-linux.sh
 
 # 3rd sources
-curl -sL https://deb.nodesource.com/setup_14.x | bash -
+curl -sL https://deb.nodesource.com/setup_16.x | bash -
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && dpkg -i erlang-solutions_2.0_all.deb
@@ -122,14 +122,14 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.17.2
+export GO_VERSION=1.17.8
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=/home/${MY_USER}/go/libs
 export GOOS=linux
 export GOARCH=amd64
-export GRPC_VERSION=v1.41.0
+export GRPC_VERSION=v1.44.0
 export GRPC_PATH=/home/${MY_USER}/grpc
 export GRPC_INSTALL_DIR=/home/${MY_USER}/.grpc
 export RUST_PATH=/home/${MY_USER}/.cargo
@@ -143,7 +143,7 @@ sudo -u ${MY_USER} mkdir -p $GRPC_PATH
 sudo -u ${MY_USER} mkdir -p $GRPC_INSTALL_DIR
 
 # install avro
-export AVRO_VERSION=1.10.2
+export AVRO_VERSION=1.11.0
 export AVRO_PREFIX=/home/vagrant/avro
 mkdir -p $AVRO_PREFIX/bin
 wget https://downloads.apache.org/avro/avro-${AVRO_VERSION}/avro-src-${AVRO_VERSION}.tar.gz
@@ -171,8 +171,8 @@ make install
 popd
 
 # install julia
-export JULIA_VERSION=1.6.3
-wget https://julialang-s3.julialang.org/bin/linux/x64/1.6/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
+export JULIA_VERSION=1.7.2
+wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
 sudo mv julia-${JULIA_VERSION} /opt/
