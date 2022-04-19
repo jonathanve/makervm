@@ -1,23 +1,23 @@
 # automatic
 export DEBIAN_FRONTEND=noninteractive
-export DEBIAN_RELEASE=buster
+export DEBIAN_RELEASE=bullseye
 export MY_USER=vagrant
 
 # sources
 echo "
-deb https://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free
-deb-src https://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free
+deb http://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free
+deb-src http://deb.debian.org/debian ${DEBIAN_RELEASE} main contrib non-free
 
-deb https://deb.debian.org/debian-security ${DEBIAN_RELEASE}/updates main contrib non-free
-deb-src https://deb.debian.org/debian-security ${DEBIAN_RELEASE}/updates main contrib non-free
+deb http://deb.debian.org/debian-security/ ${DEBIAN_RELEASE}-security main contrib non-free
+deb-src http://deb.debian.org/debian-security/ ${DEBIAN_RELEASE}-security main contrib non-free
 
-deb https://deb.debian.org/debian ${DEBIAN_RELEASE}-updates main contrib non-free
-deb-src https://deb.debian.org/debian ${DEBIAN_RELEASE}-updates main contrib non-free
+deb http://deb.debian.org/debian ${DEBIAN_RELEASE}-updates main contrib non-free
+deb-src http://deb.debian.org/debian ${DEBIAN_RELEASE}-updates main contrib non-free
 " > /etc/apt/sources.list
 
 echo "
-deb https://deb.debian.org/debian ${DEBIAN_RELEASE}-backports main contrib non-free
-deb-src https://deb.debian.org/debian ${DEBIAN_RELEASE}-backports main contrib non-free
+deb http://deb.debian.org/debian ${DEBIAN_RELEASE}-backports main contrib non-free
+deb-src http://deb.debian.org/debian ${DEBIAN_RELEASE}-backports main contrib non-free
 " | tee /etc/apt/sources.list.d/backports.list
 
 # base
@@ -64,30 +64,22 @@ resolvconf --enable-updates
 resolvconf -u
 
 # cmake
-export CMAKE_VERSION=3.16.1
-wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh
+export CMAKE_VERSION=3.18.4
+wget -q -O cmake-linux.sh http://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh
 sh cmake-linux.sh -- --skip-license --prefix=/usr
 rm cmake-linux.sh
 
 # 3rd sources
 curl -sL https://deb.nodesource.com/setup_16.x | bash -
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && dpkg -i erlang-solutions_2.0_all.deb
 curl -sS https://deb.troglobit.com/pubkey.gpg | apt-key add -
 echo "deb [arch=amd64] https://deb.troglobit.com/debian stable main" | tee /etc/apt/sources.list.d/troglobit.list
 
 # install
 apt-get update && apt-get install -y \
-        libpython2.7 \
-        libpython2.7-dev \
-        python-dev \
-        python-pip \
         python3-dev \
         python3-pip \
-        default-jdk \
+        openjdk-11-jdk \
         nodejs \
-        yarn \
         jq \
         sqlite3 \
         nasm \
@@ -102,9 +94,6 @@ apt-get update && apt-get install -y \
         libcurl4 \
         redis-tools \
         certbot \
-        python-certbot-nginx \
-        esl-erlang \
-        elixir \
         kafkacat \
         mit-scheme \
         mosquitto-clients \
@@ -122,7 +111,7 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.17.9
+export GO_VERSION=1.18.1
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
@@ -232,15 +221,6 @@ make -j4
 make install
 popd
 popd
-
-# go grpc
-export GO111MODULE=on
-/usr/local/go/bin/go get -u google.golang.org/grpc
-/usr/local/go/bin/go get -u google.golang.org/protobuf/cmd/protoc-gen-go
-/usr/local/go/bin/go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
-/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
-/usr/local/go/bin/go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
-/usr/local/go/bin/go get -u github.com/googleapis/googleapis
 
 # update python base libs
 /usr/bin/python3 -m pip install pip --upgrade
