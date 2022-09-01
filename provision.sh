@@ -161,7 +161,7 @@ popd
 
 # install julia
 export JULIA_VERSION=1.8.0
-wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
+wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
 sudo mv julia-${JULIA_VERSION} /opt/
