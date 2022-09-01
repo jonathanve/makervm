@@ -111,14 +111,14 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.18.4
+export GO_VERSION=1.18.5
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
 export GOPATH=/home/${MY_USER}/go/libs
 export GOOS=linux
 export GOARCH=amd64
-export GRPC_VERSION=v1.46.4
+export GRPC_VERSION=v1.48.1
 export GRPC_PATH=/home/${MY_USER}/grpc
 export GRPC_INSTALL_DIR=/home/${MY_USER}/.grpc
 export RUST_PATH=/home/${MY_USER}/.cargo
@@ -160,7 +160,7 @@ make install
 popd
 
 # install julia
-export JULIA_VERSION=1.7.3
+export JULIA_VERSION=1.8.0
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.7/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
