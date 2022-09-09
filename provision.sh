@@ -64,7 +64,7 @@ resolvconf --enable-updates
 resolvconf -u
 
 # cmake
-export CMAKE_VERSION=3.18.4
+export CMAKE_VERSION=3.24.1
 wget -q -O cmake-linux.sh http://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh
 sh cmake-linux.sh -- --skip-license --prefix=/usr
 rm cmake-linux.sh
@@ -111,7 +111,7 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.18.6
+export GO_VERSION=1.19.1
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
@@ -132,7 +132,7 @@ sudo -u ${MY_USER} mkdir -p $GRPC_PATH
 sudo -u ${MY_USER} mkdir -p $GRPC_INSTALL_DIR
 
 # install avro
-export AVRO_VERSION=1.11.0
+export AVRO_VERSION=1.11.1
 export AVRO_PREFIX=/home/vagrant/avro
 mkdir -p $AVRO_PREFIX/bin
 wget https://downloads.apache.org/avro/avro-${AVRO_VERSION}/avro-src-${AVRO_VERSION}.tar.gz
