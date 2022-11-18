@@ -64,8 +64,8 @@ resolvconf --enable-updates
 resolvconf -u
 
 # cmake
-export CMAKE_VERSION=3.24.1
-wget -q -O cmake-linux.sh http://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh
+export CMAKE_VERSION=3.25.0
+wget -q -O cmake-linux.sh http://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh
 sh cmake-linux.sh -- --skip-license --prefix=/usr
 rm cmake-linux.sh
 
@@ -105,8 +105,8 @@ usermod -a -G docker ${MY_USER}
 service docker start
 
 # docker-compose
-export DOCKER_COMPOSE_VERSION=1.29.2
-curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+export DOCKER_COMPOSE_VERSION=2.12.2
+curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
@@ -160,7 +160,7 @@ make install
 popd
 
 # install julia
-export JULIA_VERSION=1.8.2
+export JULIA_VERSION=1.8.3
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
