@@ -64,7 +64,7 @@ resolvconf --enable-updates
 resolvconf -u
 
 # cmake
-export CMAKE_VERSION=3.25.1
+export CMAKE_VERSION=3.25.2
 wget -q -O cmake-linux.sh http://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh
 sh cmake-linux.sh -- --skip-license --prefix=/usr
 rm cmake-linux.sh
@@ -105,13 +105,13 @@ usermod -a -G docker ${MY_USER}
 service docker start
 
 # docker-compose
-export DOCKER_COMPOSE_VERSION=2.14.2
+export DOCKER_COMPOSE_VERSION=2.15.1
 curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.19.4
+export GO_VERSION=1.19.5
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
@@ -160,7 +160,7 @@ make install
 popd
 
 # install julia
-export JULIA_VERSION=1.8.4
+export JULIA_VERSION=1.8.5
 wget https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 tar xzf julia-${JULIA_VERSION}-linux-x86_64.tar.gz
 chown -R root:root julia-${JULIA_VERSION}
