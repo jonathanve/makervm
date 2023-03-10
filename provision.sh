@@ -64,7 +64,7 @@ resolvconf --enable-updates
 resolvconf -u
 
 # cmake
-export CMAKE_VERSION=3.25.2
+export CMAKE_VERSION=3.25.3
 wget -q -O cmake-linux.sh http://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh
 sh cmake-linux.sh -- --skip-license --prefix=/usr
 rm cmake-linux.sh
@@ -105,13 +105,13 @@ usermod -a -G docker ${MY_USER}
 service docker start
 
 # docker-compose
-export DOCKER_COMPOSE_VERSION=2.15.1
+export DOCKER_COMPOSE_VERSION=2.16.0
 curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 # vars
-export GO_VERSION=1.20.1
+export GO_VERSION=1.20.2
 export GO_ARCH=linux-amd64
 export GO_URL=https://golang.org/dl/go${GO_VERSION}.${GO_ARCH}.tar.gz
 export GOROOT=/usr/local/go
